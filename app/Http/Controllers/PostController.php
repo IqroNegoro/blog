@@ -99,6 +99,21 @@ class PostController extends Controller
             }
             return back()->with("error", "Error, Try Again");
         }
+
+        if ($request->has("comment")) {
+            
+            $data = [
+                "user_id" => auth()->user()->id,
+                "post_id" => $post->id,
+                "comment" => $request->comment,
+                "parent_id" => $request->reply ?? null
+            ];
+    
+            if (Comment::create($data)) {
+                return response()->json(Comment::latest()->first()->id + 1, 200);
+            }
+            return response()->json(false, 200);
+        }
     }
 
     /**

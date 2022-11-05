@@ -21,6 +21,7 @@ Route::get("/", [HomeController::class, "index"])->name("/");
 Route::get("/user/{user:id}", [UserController::class, "show"]);
 Route::get("/post/{post:slug}", [PostController::class, "show"]);
 
+
 Route::prefix("/")->middleware("guest")->group(function() {
     Route::get("login", [AuthController::class, "loginView"]);
     Route::post("login", [AuthController::class, "loginAuth"]);
@@ -29,6 +30,7 @@ Route::prefix("/")->middleware("guest")->group(function() {
 
 Route::prefix("/")->middleware("auth")->group(function() {
     Route::post("logout", [AuthController::class, "logoutAuth"]);
+    Route::put("/post/{post:slug}", [PostController::class, "update"]);
     Route::get("me/posts/getSlug", [PostController::class, "getSlug"]);
     Route::resource("me/posts", PostController::class);
 });
