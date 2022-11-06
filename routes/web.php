@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,8 @@ Route::prefix("/")->middleware("guest")->group(function() {
 
 Route::prefix("/")->middleware("auth")->group(function() {
     Route::post("logout", [AuthController::class, "logoutAuth"]);
-    Route::put("/post/{post:slug}", [PostController::class, "update"]);
+    Route::put("/post/{post:slug}", [CommentController::class, "update"]);
+    Route::delete("/post/{comment:id}", [CommentController::class, "destroy"]);
     Route::get("me/posts/getSlug", [PostController::class, "getSlug"]);
     Route::resource("me/posts", PostController::class);
 });

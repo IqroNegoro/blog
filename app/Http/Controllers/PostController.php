@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\Comment;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 
@@ -98,21 +97,6 @@ class PostController extends Controller
                 return back()->with("success", $request->published == "N" ? "Success Unpublishing News" : "Success Publishing News");
             }
             return back()->with("error", "Error, Try Again");
-        }
-
-        if ($request->has("comment")) {
-            
-            $data = [
-                "user_id" => auth()->user()->id,
-                "post_id" => $post->id,
-                "comment" => $request->comment,
-                "parent_id" => $request->reply ?? null
-            ];
-    
-            if (Comment::create($data)) {
-                return response()->json(Comment::latest()->first()->id + 1, 200);
-            }
-            return response()->json(false, 200);
         }
     }
 

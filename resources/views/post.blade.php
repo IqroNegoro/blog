@@ -25,14 +25,20 @@
                 <button class="bg-blue-500 py-1 px-3 text-white rounded-sm mt-4" id="replyBtn">Comment</button>
                 <div id="replyContainer">
                 @foreach ($post->comment as $comment)
+                <div>
                     <div class="my-10">
                         <img src="{{ asset("images/" . $comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                         <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
                         <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
                         <p class="text-left my-2">{{ $comment->comment }}</p>
-                        <button class="bg-blue-500 text-md py-1 px-4 rounded-sm hover:bg-blue-400 transition-all duration-500 text-white reply" value="{{ $comment->id }}">
+                        <button class="text-md transition-all duration-500 text-slate-500 reply" value="{{ $comment->id }}">
                             Reply
                         </button>
+                        @if (auth()->user()->id == $comment->user_id)
+                        <button class="text-md transition-all duration-500 text-slate-500 ml-5 delete" value="{{ $comment->id }}">
+                            Delete
+                        </button>
+                        @endif
                     </div>
                         @foreach ($comment->replies as $reply)
                         <div class="my-3 translate-x-16">
@@ -40,20 +46,26 @@
                             <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
                             <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
                             <p class="text-left my-2">{{ $reply->comment }}</p>
-                            <button class="bg-blue-500 text-md py-1 px-4 rounded-sm hover:bg-blue-400 transition-all duration-500 text-white replied" value="{{ $comment->id }}">
+                            <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
                                 Reply
                             </button>
+                            @if (auth()->user()->id == $reply->user_id)
+                            <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
+                                Delete
+                            </button>
+                            @endif
                         </div>
                         @endforeach
+                </div>
                 @endforeach
                 </div>
             </div>
             {{-- profile --}}
             <div class="flex items-center flex-col w-2/3 mx-auto">
                 <img src="{{ asset("images/" . $post->user->image) }}" alt="" class="w-48 h-48 rounded-full">
-                <h1 class="mt-6 text-4xl">{{ $post->user->name }}</h1>
+                <a class="mt-6 text-4xl" href="{{ asset("user/" . $post->user->id) }}">{{ $post->user->name }}</a>
                 <p class="text-center">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptas, dicta.</p>
-                <a href="" class="bg-blue-500 px-5 py-2 text-white rounded-md mt-2">Profile</a>
+                <a href="{{ asset("user/" . $post->user->id) }}" class="bg-blue-500 px-5 py-2 text-white rounded-md mt-2">Profile</a>
             </div>
         </div>
         <div class="fixed left-0 bottom-0 w-full h-16 border flex justify-center items-center px-4 translate-y-16 transition-all duration-500 bg-white" id="replyElement">
@@ -65,43 +77,32 @@
 @section("script")
 <script>
     $(document).ready(function() {
-        let reply = "";
-        let element = "";
-        $(".reply").on("click", e => {
-            $("#replyElement").removeClass("translate-y-16")
-            reply = e.currentTarget.value;
-            element = e.currentTarget.id;
-            console.log(reply)
-            console.log(element)
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
         });
 
-        $(".replied").on("click", e => {
-            $("#replyElement").removeClass("translate-y-16")
-            reply = e.currentTarget.value;
-            element = e.currentTarget.parentElement.id;
-            console.log(reply)
-            console.log(element)
-        });
+        let reply = "";
+        let element = "";
+        let stateReply = false;
 
         $("#replyBtn").on("click", e => {
             $("#replyElement").removeClass("translate-y-16")
             reply = "";
-            element = e.currentTarget.parentElement.id;
-            console.log(reply)
-            console.log(element)
+            element = e.currentTarget.parentElement;
+            $("#replyInput").attr("placeholder", "Comment");
+            $("#replyInput").focus();
+            stateReply = true;
         });
 
         $("#replyDown").on("click", e => {
+            stateReply = false;
             $("#replyElement").addClass("translate-y-16")
         });
 
-        $("#sendComment").on("click", e => {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                }
-            });
-
+        let sendComment = e => {
+            if ($("#replyInput").val()) {
             $.ajax({
                 url: "{{ asset("post/$post->slug") }}",
                 method: "PUT",
@@ -115,14 +116,19 @@
                     if (res) {
                         if (!reply) {
                             let text = `
-                            <div class="my-10">
-                                <img src="{{ asset("images/" . auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
-                                <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
-                                <span class="mt-2">0 second</span>
-                                <p class="text-left my-2">${$("#replyInput").val()}</p>
-                                <button class="bg-blue-500 text-md py-1 px-4 rounded-sm hover:bg-blue-400 transition-all duration-500 text-white reply" value="${res}">
-                                    Reply
-                                </button>
+                            <div>
+                                <div class="my-10">
+                                    <img src="{{ asset("images/" . auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
+                                    <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
+                                    <span class="mt-2">0 second</span>
+                                    <p class="text-left my-2">${$("#replyInput").val()}</p>
+                                    <button class="text-md transition-all duration-500 text-slate-500 reply" value="${res}">
+                                        Reply
+                                    </button>
+                                    <button class="text-md transition-all duration-500 text-slate-500 ml-5 delete" value="${res}">
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                             `;
                             $("#replyContainer").append(text);
@@ -133,13 +139,15 @@
                                 <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
                                 <span class="mt-2">0 second</span>
                                 <p class="text-left my-2">${$("#replyInput").val()}</p>
-                                <button class="bg-blue-500 text-md py-1 px-4 rounded-sm hover:bg-blue-400 transition-all duration-500 text-white replied" value="${res}">
+                                <button class="text-md transition-all duration-500 text-slate-500 replied" value="${res}">
                                     Reply
+                                </button>
+                                <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="${res}">
+                                    Delete
                                 </button>
                             </div>
                             `;
-                            $(text).insertAfter(`.${element}`)
-                            //reply comment error
+                            element.insertAdjacentHTML("afterend", text);
                         }
                         $("#replyInput").val("")
                     } else {
@@ -147,7 +155,66 @@
                     }
                 }
             });
+        }
+    }
+    
+        let deleteReplied = false;
+
+        let deleteComment = v => {
+            console.log(deleteReplied)
+            $.ajax({
+                url: `{{ asset('post/${v.value}') }}`,
+                method: "DELETE",
+                dataType: "json",
+                success: res => {
+                    if (res) {
+                        if (!deleteReplied) {
+                            v.parentElement.parentElement.style.display = "none";
+                        } else {
+                            v.parentElement.style.display = "none";
+                        }
+                    } else {
+                        alert("Error When Deleting Comment");
+                    }
+                },
+                error: res => console.log(res)
+            });
+        }
+        
+        $("#sendComment").on("click", sendComment);
+        window.addEventListener("keyup", e => {
+            if (e.keyCode == 13) sendComment()
+        })
+
+        $(window).on("click", e => {
+            if (e.target.classList.contains("reply")) {
+                $("#replyElement").removeClass("translate-y-16")
+                reply = e.target.value;
+                console.log(reply)
+                element = e.target.parentElement;
+                $("#replyInput").attr("placeholder", "Reply");
+                $("#replyInput").focus();
+                stateReply = true;
+            }
+
+            if (e.target.classList.contains("replied")) {
+                $("#replyElement").removeClass("translate-y-16")
+                console.log(reply)
+                element = e.target.parentElement;
+                $("#replyInput").attr("placeholder", "Reply");
+                $("#replyInput").focus();
+                stateReply = true;
+            }
+
+            if (e.target.classList.contains("delete")) {
+                deleteComment(e.target);
+            }
+
+            if (e.target.classList.contains("deleteReplied")) {
+                deleteComment(e.target);
+                deleteReplied = true;
+            }
+        })
         });
-    });
 </script>
 @endsection
