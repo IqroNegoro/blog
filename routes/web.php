@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +36,8 @@ Route::prefix("/")->middleware("auth")->group(function() {
     Route::delete("/post/{comment:id}", [CommentController::class, "destroy"]);
     Route::get("me/posts/getSlug", [PostController::class, "getSlug"]);
     Route::resource("me/posts", PostController::class);
+});
+
+Route::prefix("/")->middleware("auth", "admin")->group(function() {
+    Route::resource("administrator/tags", TagController::class);
 });

@@ -9,7 +9,5 @@ class Tag extends Model
 {
     use HasFactory;
 
-    public function post() {
-        return $this->hasMany(tag)
-    }
+    protected $guarded = ["id"];
 }

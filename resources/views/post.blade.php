@@ -22,7 +22,12 @@
                 <p class="my-10">Tags : <a href="" class="text-blue-500">Travel</a></p>
                 {{-- comment --}}
                 <h1 class="text-5xl mt-10">Leave A Comment</h1>
+                @guest
+                <h1 class="text-2xl mt-10"><a href="{{ asset('login') }}" class="text-blue-500">Log in</a> first to comment</h1>
+                @endguest
+                @auth
                 <button class="bg-blue-500 py-1 px-3 text-white rounded-sm mt-4" id="replyBtn">Comment</button>
+                @endauth
                 <div id="replyContainer">
                 @foreach ($post->comment as $comment)
                 <div>
@@ -31,14 +36,16 @@
                         <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
                         <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
                         <p class="text-left my-2">{{ $comment->comment }}</p>
+                        @auth
                         <button class="text-md transition-all duration-500 text-slate-500 reply" value="{{ $comment->id }}">
                             Reply
                         </button>
-                        @if (auth()->user()->id == $comment->user_id)
-                        <button class="text-md transition-all duration-500 text-slate-500 ml-5 delete" value="{{ $comment->id }}">
-                            Delete
-                        </button>
-                        @endif
+                            @if (auth()->user()->id == $comment->user_id)
+                            <button class="text-md transition-all duration-500 text-slate-500 ml-5 delete" value="{{ $comment->id }}">
+                                Delete
+                            </button>
+                            @endif
+                        @endauth
                     </div>
                         @foreach ($comment->replies as $reply)
                         <div class="my-3 translate-x-16">
@@ -46,14 +53,16 @@
                             <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
                             <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
                             <p class="text-left my-2">{{ $reply->comment }}</p>
+                            @auth
                             <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
                                 Reply
                             </button>
-                            @if (auth()->user()->id == $reply->user_id)
-                            <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
-                                Delete
-                            </button>
-                            @endif
+                                @if (auth()->user()->id == $reply->user_id)
+                                <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
+                                    Delete
+                                </button>
+                                @endif
+                            @endauth
                         </div>
                         @endforeach
                 </div>
@@ -74,6 +83,7 @@
             <i class="bx bx-send text-3xl p-1 ml-1 text-black cursor-pointer hover:bg-slate-200 rounded-sm" id="sendComment"></i>
         </div>
 @endsection
+@auth
 @section("script")
 <script>
     $(document).ready(function() {
@@ -218,3 +228,4 @@
         });
 </script>
 @endsection
+@endauth

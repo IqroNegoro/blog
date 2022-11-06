@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Tag;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,8 @@ class PostController extends Controller
     public function create()
     {
         return view("posts.create", [
-            "title" => "Create New Post"
+            "title" => "Create New Post",
+            "tags" => Tag::all()
         ]);
     }
 

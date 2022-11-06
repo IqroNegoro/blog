@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" as="image" href="{{ asset("images/login.jpg") }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +31,7 @@
                     <input type="file" id="profile" name="profile" class="hidden w-full cursor-pointer p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white file:bg-transparent file:text-white file:outline-none file:border-0">
                     <input type="text" id="email" name="email" class="w-full p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white" placeholder="Email" value="{{ old('email') }}">
                     <input type="password" name="password" class="w-full p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white" placeholder="Password">
-                    <button class="w-full rounded-full p-4 bg-red-400 my-2 h-16 text-md cursor-pointer text-white font-semibold">
+                    <button class="w-full rounded-full p-4 bg-red-400 hover:bg-red-500 my-2 h-16 text-md cursor-pointer text-white font-semibold">
                         GET STARTED
                     </button>
                     <div class="w-full flex justify-center items-center my-3">

@@ -37,7 +37,7 @@
             </div>
             <ul>
                 <li class="mt-4">
-                    <a href="">Home</a>
+                    <a href="{{ asset('/') }}">Home</a>
                 </li>
                 <li class="mt-4">
                     <a href="">Contact</a>
@@ -69,6 +69,15 @@
                     <a href="{{ asset('me/posts') }}">Posts</a>
                 </li>
             </ul>
+            @if (auth()->user()->admin == "Y")
+            <hr class="my-4">
+            <h2 class="font-semibold text-xl">Administrator</h2>
+            <ul>
+                <li class="mt-4">
+                    <a href="{{ asset('administrator/tags') }}">Tags</a>
+                </li>
+            </ul>
+            @endif
             @endauth
         </div>
         @yield("content")

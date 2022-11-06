@@ -43,171 +43,29 @@
             </div>
         </a>
     </div>
+    {{-- recent posts --}}
     <div class="w-full p-4 mt-4">
         <h3 class="font-medium text-3xl mb-12">Recent Posts</h3>
         <div class="w-full grid md:grid-cols-3 grid-rows-[repeat(auto-fit,1fr)] gap-4">
+            @foreach ($posts as $post)
             <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
+                <a href="{{ asset("post/$post->slug") }}">
+                    <img src="{{ asset("$post->image") }}" alt="" class="rounded-md" loading="lazy">
+                </a>
                 <div class="p-2">
                     <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
+                    <h1 class="font-medium text-3xl">{{ $post->title }}</h1>
                     <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
+                        <img src="{{ asset('images/' . $post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
                         <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
+                        <a href="{{ asset("user/" . $post->user->id) }}">&nbsp; {{ $post->user->name }} </a>
+                        <span>&nbsp; - {{ date("d M Y", strtotime($post->published_at)) }}</span>
                     </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
+                    <p>{{ $post->excerpt }}</p>
+                    <a href="{{ asset("post/$post->slug") }}" class="text-blue-400">Read More</a>
                 </div>
             </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
-            <div>
-                <img src="{{ asset('images/anime.webp') }}" alt="" class="rounded-md" loading="lazy">
-                <div class="p-2">
-                    <a href="" class="tag">Travel</a>
-                    <h1 class="font-medium text-3xl">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h1>
-                    <div class="flex items-center my-3">
-                        <img src="{{ asset('images/anime.webp') }}" alt="" loading="lazy"
-                            class="w-10 h-10 rounded-full mr-4">
-                        <span>By</span>
-                        <a>&nbsp; Iqro </a>
-                        <span>&nbsp; - July 2022</span>
-                    </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis quaerat nemo eos repudiandae mollitia
-                        itaque aut odit praesentium a labore error, sapiente amet maiores maxime quidem, totam et. Debitis,
-                        nam.</p>
-                    <a href="" class="text-blue-400">Read More</a>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection

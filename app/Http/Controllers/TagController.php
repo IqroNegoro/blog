@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
-use App\Http\Requests\StoreTagRequest;
-use App\Http\Requests\UpdateTagRequest;
+use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
@@ -15,7 +14,10 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        return view("tags.index", [
+            "title" => "Post Tags",
+            "tags" => Tag::all()
+        ]);
     }
 
     /**
@@ -25,7 +27,9 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+        return view("tags.create", [
+            "title" => "Create New Tag"
+        ]);
     }
 
     /**
@@ -34,9 +38,17 @@ class TagController extends Controller
      * @param  \App\Http\Requests\StoreTagRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTagRequest $request)
+    public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            "name" => "required|max:255",
+            "color" => "required|max:255"
+        ]);
+
+        if (Tag::create($data)) {
+            return redirect("administrator/tags")->with("success", "Success Create New Tag");
+        }
+        return redirect("administrator/tags")->with("error", "Error Create New Tag");
     }
 
     /**
@@ -58,7 +70,10 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        //
+        return view("tags.edit", [
+            "title" => "Edit tag",
+            "tag" => $tag
+        ]);
     }
 
     /**
@@ -68,9 +83,17 @@ class TagController extends Controller
      * @param  \App\Models\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTagRequest $request, Tag $tag)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $data = $request->validate([
+            "name" => "required|unique:tags",
+            "color" => "required"
+        ]);
+
+        if ($tag->update($data)) {
+            return redirect("administrator/tags")->with("success", "Success Edit Tag");
+        }
+        return redirect("administrator/tags")->with("error", "Error Edit Tag");
     }
 
     /**
@@ -81,6 +104,9 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        //
+        if ($tag->delete()) {
+            return redirect("administrator/tags")->with("success", "Success Delete Tag");
+        }
+        return redirect("administrator/tags")->with("error", "Error Delete Tag");
     }
 }

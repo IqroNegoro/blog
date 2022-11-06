@@ -10,6 +10,6 @@
 
 @layer components {
     .tag {
-        @apply bg-blue-500 rounded-sm text-white mt-2 px-2;
+        @apply rounded-sm text-center mt-2 px-2 text-white;
     }
 }
