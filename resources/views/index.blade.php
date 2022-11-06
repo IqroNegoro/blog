@@ -50,10 +50,13 @@
             @foreach ($posts as $post)
             <div>
                 <a href="{{ asset("post/$post->slug") }}">
-                    <img src="{{ asset("$post->image") }}" alt="" class="rounded-md" loading="lazy">
+                    <img src="{{ asset("$post->image") }}" alt="" class="rounded-md w-full h-64" loading="lazy">
                 </a>
                 <div class="p-2">
-                    <a href="" class="tag">Travel</a>
+                    @dd($post)
+                    @foreach ($post->tag as $tag)
+                    <a href="" class="tag" style="background-color: {{ $tag->color }}">{{ $tag->name }}</a>
+                    @endforeach
                     <h1 class="font-medium text-3xl">{{ $post->title }}</h1>
                     <div class="flex items-center my-3">
                         <img src="{{ asset('images/' . $post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">

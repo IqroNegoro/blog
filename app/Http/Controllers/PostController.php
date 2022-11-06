@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\TagPost;
 use \Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 
@@ -46,15 +47,25 @@ class PostController extends Controller
         $data = $request->validate([
             "image" => "required|image",
             "title" => "required|max:255",
-            "excerpt" => "required|max:100",
+            "excerpt" => "required|max:255",
             "slug" => "required",
-            "body" => "required"
+            "body" => "required",
+            "tags" => "required",
         ]);
+
+        $tags = [];
+        
+        foreach ($request->tags as $tag) {
+            array_push($tags, [
+                "post_id" => Post::latest()->first()->id + 1,
+                "tag_id" => $tag
+            ]);
+        }
 
         $data["user_id"] = auth()->user()->id;
         $data["image"] = $request->file("image")->store("/images", "public");
 
-        if (Post::create($data)) {
+        if (Post::create($data) && TagPost::insert($tags)) {
             return redirect('me/posts')->with("success", "Success Create Post");
         }
         return redirect('me/posts')->with("error", "Error Create Post");

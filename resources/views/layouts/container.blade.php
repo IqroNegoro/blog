@@ -31,7 +31,7 @@
             <span class="font-bold">Mini Blog</span>
             <i class="bx bx-menu text-2xl cursor-pointer" id="menuBtn"></i>
         </div>
-        <div class="block fixed top-0 transition-all duration-500 right-0 w-0 min-h-screen bg-white" id="menu">
+        <div class="block fixed top-0 transition-all duration-500 right-0 w-0 min-h-screen bg-white drop-shadow-lg shadow-black" id="menu">
             <div class="w-full text-right">
                 <i class="bx bx-x text-2xl font-semibold cursor-pointer" id="closeBtn"></i>
             </div>
@@ -88,6 +88,7 @@
         const menu = document.getElementById("menu");
         menuBtn.addEventListener("click", () => {
             menu.classList.replace("w-0", "w-1/3")
+            menu.classList.remove("p-0")
             menu.classList.toggle("p-4");
         });
 

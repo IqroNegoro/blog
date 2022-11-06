@@ -17,8 +17,9 @@ class Post extends Model
     }
 
     public function tag() {
-        return $this->hasMany(TagPost::class);
+        return $this->belongsToMany(TagPost::class, Tag::class);
     }
+    //tag error
 
     public function comment() {
         return $this->hasMany(Comment::class, "post_id")->whereNull("parent_id");
