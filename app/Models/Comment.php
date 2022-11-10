@@ -23,10 +23,14 @@ class Comment extends Model
         return $this->hasMany(Comment::class, "parent_id")->whereNotNull("parent_id");
     }
 
+    public function replied() {
+        return $this->belongsTo(Comment::class, "parent_id", "id");
+    }
+
     public static function boot() {
         parent::boot();
 
-        static::deleted(function($comment) {
+        static::deleting(function($comment) {
             $comment->replies->each->delete();
         });
     }

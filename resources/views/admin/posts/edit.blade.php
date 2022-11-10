@@ -10,24 +10,25 @@
     }
     </style>
 <div class="w-full mt-16 p-4">
-    <h3 class="font-medium text-3xl my-2">Create New Post</h3>
-    <form action="{{ asset('me/posts') }}" method="POST" enctype="multipart/form-data" id="form">
+    <h3 class="font-medium text-3xl my-2">Edit Post</h3>
+    <form action="{{ asset("administrator/posts/$post->slug") }}" method="POST" enctype="multipart/form-data" id="form">
         @csrf
+        @method("put")
         <div class="w-full mt-4">
             <label for="image" class="text-2xl">Image</label>
             <input type="file" name="image" id="image" class="w-full">
         </div>
         <div class="w-full mt-4">
             <label for="title" class="text-2xl">Title</label>
-            <input type="text" id="title" name="title" class="w-full border rounded-sm outline-none p-2" placeholder="Title..." value="{{ old("title") }}">
+            <input type="text" id="title" name="title" class="w-full border rounded-sm outline-none p-2" placeholder="Title..." value="{{ $post->title }}">
         </div>
         <div class="w-full mt-4">
             <label for="excerpt" class="text-2xl">Excerpt</label>
-            <input type="text" id="excerpt" name="excerpt" class="w-full border rounded-sm outline-none p-2" placeholder="Excerpt..." value="{{ old("excerpt") }}">
+            <input type="text" id="excerpt" name="excerpt" class="w-full border rounded-sm outline-none p-2" placeholder="Excerpt..." value="{{ $post->excerpt }}">
         </div>
         <div class="w-full mt-4 hidden">
             <label for="slug" class="text-2xl">Slug</label>
-            <input type="text" id="slug" name="slug" class="w-full border rounded-sm outline-none p-2" placeholder="Slug..." value="{{ old("slug") }}">
+            <input type="text" id="slug" name="slug" class="w-full border rounded-sm outline-none p-2" placeholder="Slug..." value="{{ $post->slug }}">
         </div>
         <div class="w-full mt-4">
             <label for="tag" class="text-2xl block">Tags</label>
@@ -37,16 +38,22 @@
                     <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                 @endforeach
             </select>
-            <div id="tagsContainer" class="grid grid-cols-12 grid-flow-row gap-4"></div>
+            <div id="tagsContainer" class="grid grid-cols-12 grid-flow-row gap-4">
+                @foreach ($post->tag as $tag)
+                <button class="tag bg-blue-500" value="{{ $tag->tag->id }}" type="button" style="background-color: {{ $tag->tag->color }}">
+                    {{ $tag->tag->name }}
+                </button>
+                @endforeach
+            </div>
             <input type="hidden" name="tags[]" class="w-full border rounded-sm outline-none p-2" id="tagInput">
         </div>
         <div class="w-full mt-4">
             <label for="body" class="text-2xl">Content</label>
-            <input id="body" type="hidden" name="body" value="{{ old('body') }}">
+            <input id="body" type="hidden" name="body" value="{{ $post->body }}">
             <trix-editor input="body"></trix-editor>
         </div>
         <button type="submit" class="bg-blue-500 text-white py-1 px-4 text-xl mt-2">
-            Create
+            Edit
         </button>
     </form>
 </div>
@@ -58,10 +65,15 @@
         const slug = document.getElementById("slug");
 
         title.addEventListener("change", () => {
-            fetch(`{{ asset('me/posts/getSlug?title=${title.value}') }}`).then(resp => resp.json()).then(resp => slug.value = resp);
+            fetch(`{administrator/posts/getSlug?title=${title.value}') }}`).then(resp => resp.json()).then(resp => slug.value = resp);
         });
 
         let arr = [];
+        
+        @foreach ($post->tag as $tag)
+            arr.push("{{ $tag->tag->id }}")
+        @endforeach
+
         $("#tagsInput").on("change", e => {
             if (!isNaN(e.currentTarget.value) && arr.indexOf(e.currentTarget.value) == -1) {
                 arr.push(e.currentTarget.value)

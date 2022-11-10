@@ -17,9 +17,8 @@ class Post extends Model
     }
 
     public function tag() {
-        return $this->belongsToMany(TagPost::class, Tag::class);
+        return $this->hasMany(TagPost::class, "post_id");
     }
-    //tag error
 
     public function comment() {
         return $this->hasMany(Comment::class, "post_id")->whereNull("parent_id");
@@ -36,5 +35,13 @@ class Post extends Model
                 'source' => 'title'
             ]
         ];
+    }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($post) {
+            $post->tag->each->delete();
+        });
     }
 }

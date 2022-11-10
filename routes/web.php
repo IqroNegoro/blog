@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\AdminPostController;
+use App\Http\Controllers\AdminCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +34,7 @@ Route::prefix("/")->middleware("guest")->group(function() {
 
 Route::prefix("/")->middleware("auth")->group(function() {
     Route::post("logout", [AuthController::class, "logoutAuth"]);
-    Route::put("/post/{post:slug}", [CommentController::class, "update"]);
+    Route::post("/post/{post:slug}", [CommentController::class, "store"]);
     Route::delete("/post/{comment:id}", [CommentController::class, "destroy"]);
     Route::get("me/posts/getSlug", [PostController::class, "getSlug"]);
     Route::resource("me/posts", PostController::class);
@@ -40,4 +42,7 @@ Route::prefix("/")->middleware("auth")->group(function() {
 
 Route::prefix("/")->middleware("auth", "admin")->group(function() {
     Route::resource("administrator/tags", TagController::class);
+    Route::resource("administrator/posts", AdminPostController::class);
+    Route::get("administrator/replies/{comment:id}", [AdminCommentController::class, "show"]);
+    Route::resource("administrator/comments", AdminCommentController::class);
 });

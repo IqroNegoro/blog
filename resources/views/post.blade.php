@@ -3,9 +3,11 @@
         {{-- header --}}
         <div class="w-full min-h-screen bg-cover bg-no-repeat bg-center flex justify-center items-center" style="background-image: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0)), url('{{ asset("$post->image") }}')">
             <div class="flex justify-center items-center flex-col w-1/2">
-                <a href="" class="tag">
-                    Travel
-                </a>
+                <p>
+                @foreach ($post->tag as $tag)
+                    <a href="{{ asset("?tag=$tag->tag->name") }}" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
+                @endforeach
+                </p>
                 <h1 class="text-5xl text-white tracking-wider text-center">{{ $post->title }}</h1>
                 <div class="flex items-center my-3">
                     <img src="{{ asset("images/" . $post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
@@ -16,10 +18,14 @@
             </div>
         </div>
         {{-- body --}}
-        <div class="grid grid-cols-[2fr,1fr] p-16 w-full mt-8">
+        <div class="grid grid-cols-1 md:grid-cols-[2fr,1fr] p-16 w-full mt-8">
             <div>
                 {!! $post->body !!}
-                <p class="my-10">Tags : <a href="" class="text-blue-500">Travel</a></p>
+                <p class="my-10">Tags : 
+                @foreach ($post->tag as $tag)
+                    <a href="" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
+                @endforeach
+            </p>
                 {{-- comment --}}
                 <h1 class="text-5xl mt-10">Leave A Comment</h1>
                 @guest
@@ -34,7 +40,7 @@
                     <div class="my-10">
                         <img src="{{ asset("images/" . $comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                         <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
-                        <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
+                        <span class="mt-2">{{ $comment->created_at->diffForHumans() }}</span>
                         <p class="text-left my-2">{{ $comment->comment }}</p>
                         @auth
                         <button class="text-md transition-all duration-500 text-slate-500 reply" value="{{ $comment->id }}">
@@ -51,7 +57,7 @@
                         <div class="my-3 translate-x-16">
                             <img src="{{ asset("images/" . $reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                             <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
-                            <span class="mt-2">{{ date("d M Y", strtotime($post->created_at)) }}</span>
+                            <span class="mt-2">{{ $reply->created_at->diffForHumans() }}</span>
                             <p class="text-left my-2">{{ $reply->comment }}</p>
                             @auth
                             <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
@@ -70,7 +76,7 @@
                 </div>
             </div>
             {{-- profile --}}
-            <div class="flex items-center flex-col w-2/3 mx-auto">
+            <div class="flex items-center flex-col mt-96 md:mt-0 w-2/3 mx-auto">
                 <img src="{{ asset("images/" . $post->user->image) }}" alt="" class="w-48 h-48 rounded-full">
                 <a class="mt-6 text-4xl" href="{{ asset("user/" . $post->user->id) }}">{{ $post->user->name }}</a>
                 <p class="text-center">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptas, dicta.</p>
@@ -115,7 +121,7 @@
             if ($("#replyInput").val()) {
             $.ajax({
                 url: "{{ asset("post/$post->slug") }}",
-                method: "PUT",
+                method: "POST",
                 data: {
                     post: "{{ $post->slug }}",
                     comment: $("#replyInput").val(),
@@ -171,7 +177,6 @@
         let deleteReplied = false;
 
         let deleteComment = v => {
-            console.log(deleteReplied)
             $.ajax({
                 url: `{{ asset('post/${v.value}') }}`,
                 method: "DELETE",
@@ -187,7 +192,6 @@
                         alert("Error When Deleting Comment");
                     }
                 },
-                error: res => console.log(res)
             });
         }
         
@@ -200,7 +204,6 @@
             if (e.target.classList.contains("reply")) {
                 $("#replyElement").removeClass("translate-y-16")
                 reply = e.target.value;
-                console.log(reply)
                 element = e.target.parentElement;
                 $("#replyInput").attr("placeholder", "Reply");
                 $("#replyInput").focus();
@@ -209,7 +212,7 @@
 
             if (e.target.classList.contains("replied")) {
                 $("#replyElement").removeClass("translate-y-16")
-                console.log(reply)
+                reply = e.target.value;
                 element = e.target.parentElement;
                 $("#replyInput").attr("placeholder", "Reply");
                 $("#replyInput").focus();

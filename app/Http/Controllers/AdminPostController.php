@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\TagPost;
-use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class PostController extends Controller
+class AdminPostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +17,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index', [
-            'title' => 'Me',
-            'posts' => Post::where('user_id', auth()->user()->id)->get(),
+        return view('admin.posts.index', [
+            'title' => 'Manage Posts User',
+            'posts' => Post::with(["user"])->get(),
         ]);
     }
 
@@ -31,48 +30,18 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create', [
-            'title' => 'Create New Post',
-            'tags' => Tag::all(),
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePostRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'image' => 'required|image',
-            'title' => 'required|max:255',
-            'excerpt' => 'required|max:255',
-            'slug' => 'required|unique:posts',
-            'body' => 'required',
-            'tags' => 'required',
-        ]);
-
-        
-        $data['user_id'] = auth()->user()->id;
-        $data['image'] = $request->file('image')->store('/images', 'public');
-        
-        if (Post::create($data)) {
-            $tags = [];
-    
-            foreach (explode(",", $request->tags[0]) as $tag) {
-                array_push($tags, [
-                    'post_id' => Post::latest()->first()->id,
-                    'tag_id' => $tag,
-                ]);
-            }
-
-            TagPost::insert($tags);
-
-            return redirect('me/posts')->with('success', 'Success Create Post');
-        }
-        return redirect('me/posts')->with('error', 'Error Create Post');
+        //
     }
 
     /**
@@ -83,10 +52,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('post', [
-            'title' => $post->title,
-            'post' => $post,
-        ]);
+        //
     }
 
     /**
@@ -97,7 +63,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('posts.edit', [
+        return view('admin.posts.edit', [
             'title' => 'Edit Post',
             'post' => $post,
             'tags' => Tag::all(),
@@ -107,7 +73,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePostRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
@@ -158,9 +124,9 @@ class PostController extends Controller
         }
 
         if (Post::find($post->id)->update($data) && TagPost::insert($tags)) {
-            return redirect('me/posts')->with('success', 'Success Create Post');
+            return redirect('administrator/posts')->with('success', 'Success Create Post');
         }
-        return redirect('me/posts')->with('error', 'Error Create Post');
+        return redirect('administrator/posts')->with('error', 'Error Create Post');
     }
 
     /**
@@ -176,11 +142,5 @@ class PostController extends Controller
             return back()->with('success', 'Success Delete Post');
         }
         return back()->with('error', 'Error Delete Post');
-    }
-
-    public function getSlug(Request $request)
-    {
-        $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
-        return response()->json($slug, 200);
     }
 }

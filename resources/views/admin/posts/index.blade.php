@@ -2,14 +2,12 @@
 @section("content")
 <div class="w-full mt-16 p-4">
     <h3 class="font-medium text-3xl my-2">Manage Posts</h3>
-    <a href="{{ asset('me/posts/create') }}">
-        <button class="py-1 px-4 bg-blue-500 text-white my-4 rounded-sm cursor-pointer">Create New</button>
-    </a>
     <table class="table-auto border w-full">
         <thead>
             <tr class="border border-slate-600 bg-slate-600 text-white">
                 <th>No</th>
                 <th>Title</th>
+                <th>User</th>
                 <th>Published</th>
                 <th>Created At</th>
                 <th>Action</th>
@@ -21,7 +19,10 @@
                 <td class="border border-slate-700">{{ $loop->iteration }}</td>
                 <td class="border border-slate-700">{{ $post->title }}</td>
                 <td class="border border-slate-700">
-                    <form action="{{ asset("me/posts/$post->slug") }}" method="POST">
+                    <a href="{{ asset("user/" . $post->user->id) }}">{{ $post->user->name }}</a>
+                </td>
+                <td class="border border-slate-700">
+                    <form action="{{ asset("administrator/posts/$post->slug") }}" method="POST">
                         @method('put')
                         @csrf
                         <button type="submit" name="published" value="{{ $post->published == 'N' ? 'Y' : 'N' }}" class="@if ($post->published == 'N') bg-red-500 @else bg-green-500 @endif py-1 px-2 text-white rounded-sm">
@@ -35,7 +36,7 @@
                         <a href="{{ asset("post/$post->slug") }}">
                             <i class="bx bx-show bg-blue-500 py-1 px-2 text-white font-semibold rounded-sm"></i>
                         </a>
-                        <a href="{{ asset("me/posts/$post->slug/edit") }}">
+                        <a href="{{ asset("administrator/posts/$post->slug/edit") }}">
                             <i class="bx bx-edit bg-yellow-500 py-1 px-2 text-white font-semibold rounded-sm"></i>
                         </a>
                         <form action="{{ asset("me/posts/$post->slug") }}" method="POST">

@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Post;
-use App\Http\Requests\StoreCommentRequest;
-use App\Http\Requests\UpdateCommentRequest;
 use Illuminate\Http\Request;
 
-class CommentController extends Controller
+class AdminCommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +14,10 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        return view("admin.comments.index", [
+            "title" => "Manage Comments Post",
+            "comments" => Comment::with(["post", "user", "replies"])->whereNull("parent_id")->get()
+        ]);
     }
 
     /**
@@ -33,24 +33,12 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCommentRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Post $post)
+    public function store(Request $request)
     {
-        if ($request->has("comment")) {
-            $data = [
-                "user_id" => auth()->user()->id,
-                "post_id" => $post->id,
-                "comment" => $request->comment,
-                "parent_id" => $request->reply ?? null
-            ];
-    
-            if (Comment::create($data)) {
-                return response()->json(Comment::latest()->first()->id, 200);
-            }
-            return response()->json(false, 200);
-        }
+        //
     }
 
     /**
@@ -61,7 +49,10 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
+        return view("admin.comments.replies", [
+            "title" => "Replies $comment->comment",
+            "replies" => Comment::with(["post", "user", "replied"])->where("parent_id", $comment->id)->get()
+        ]);
     }
 
     /**
@@ -78,12 +69,13 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCommentRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Comment $comment)
     {
+        //
     }
 
     /**
@@ -95,8 +87,8 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         if ($comment->delete()) {
-            return response()->json(true, 200);
+            return back()->with("success", "Success Delete Comment");
         }
-        return response()->json(false, 200);
+        return back()->with("error", "Error Delete Comment");
     }
 }

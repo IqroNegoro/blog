@@ -14,7 +14,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return view("tags.index", [
+        return view("admin.tags.index", [
             "title" => "Post Tags",
             "tags" => Tag::all()
         ]);
@@ -27,7 +27,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view("tags.create", [
+        return view("admin.tags.create", [
             "title" => "Create New Tag"
         ]);
     }
@@ -70,7 +70,7 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        return view("tags.edit", [
+        return view("admin.tags.edit", [
             "title" => "Edit tag",
             "tag" => $tag
         ]);
@@ -85,10 +85,15 @@ class TagController extends Controller
      */
     public function update(Request $request, Tag $tag)
     {
-        $data = $request->validate([
-            "name" => "required|unique:tags",
+        $rules = [
             "color" => "required"
-        ]);
+        ];
+
+        if ($request->name != $tag->name) {
+            $rules["name"] = "required|unique:tags";
+        }
+    
+        $data = $request->validate($rules);
 
         if ($tag->update($data)) {
             return redirect("administrator/tags")->with("success", "Success Edit Tag");

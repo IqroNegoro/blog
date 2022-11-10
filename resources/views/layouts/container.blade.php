@@ -76,6 +76,12 @@
                 <li class="mt-4">
                     <a href="{{ asset('administrator/tags') }}">Tags</a>
                 </li>
+                <li class="mt-4">
+                    <a href="{{ asset('administrator/posts') }}">Posts</a>
+                </li>
+                <li class="mt-4">
+                    <a href="{{ asset('administrator/comments') }}">Comments</a>
+                </li>
             </ul>
             @endif
             @endauth
