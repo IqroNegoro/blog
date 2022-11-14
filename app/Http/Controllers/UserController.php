@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -14,7 +15,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return view("admin.users.index", [
+            "title" => "Manage Users",
+            "users" => User::all()
+        ]);
     }
 
     /**
@@ -46,7 +50,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view("users.show", [
+            "title" => "User $user->name",
+            "user" => $user
+        ]);
     }
 
     /**
@@ -57,7 +64,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view("admin.users.edit", [
+            "title" => "Edit $user->name",
+            "user" => $user
+        ]);
     }
 
     /**
@@ -69,7 +79,34 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $rules = [
+            "name" => "required|max:255"
+        ];
+
+        if ($request->email != $user->email) {
+            $rules["email"] = "required|unique:users";
+        }
+        if ($request->password) {
+            $rules["password"] = "required";
+        }
+
+        if ($request->has("image")) {
+            $rules["image"] = "required";
+        }
+        
+        $data = $request->validate($rules);
+        
+        if ($request->has("image")) {
+            if (Storage::disk("public")->exists($user->image)) {
+                Storage::disk("public")->delete($user->image);
+            }
+            $data["image"] = $request->file("image")->store("/images", "public");
+        }
+
+        if ($user->update($data)) {
+            return back()->with("success", "Success Update User");
+        }
+        return back()->with("error", "Error Update User");
     }
 
     /**
@@ -80,6 +117,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if ($user->delete()) {
+            return back()->with("success", "Success Delete User");
+        }
+        return back()->with("error", "Error Delete User");
     }
 }

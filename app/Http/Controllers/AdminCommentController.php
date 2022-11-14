@@ -16,7 +16,7 @@ class AdminCommentController extends Controller
     {
         return view("admin.comments.index", [
             "title" => "Manage Comments Post",
-            "comments" => Comment::with(["post", "user", "replies"])->whereNull("parent_id")->get()
+            "comments" => Comment::with(["post", "user", "replies"])->get()
         ]);
     }
 

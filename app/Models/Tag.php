@@ -10,4 +10,8 @@ class Tag extends Model
     use HasFactory;
 
     protected $guarded = ["id"];
+
+    public function tagPost() {
+        return $this->hasMany(TagPost::class);
+    }
 }

@@ -28,7 +28,7 @@
                     @csrf
                     <i class="bx bx-user text-white text-4xl my-3"></i>
                     <input type="text" id="name" name="name" class="hidden w-full p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white" placeholder="Name" value="{{ old('name') }}">
-                    <input type="file" id="profile" name="profile" class="hidden w-full cursor-pointer p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white file:bg-transparent file:text-white file:outline-none file:border-0">
+                    <input type="file" id="image" name="image" class="hidden w-full cursor-pointer p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white file:bg-transparent file:text-white file:outline-none file:border-0">
                     <input type="text" id="email" name="email" class="w-full p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white" placeholder="Email" value="{{ old('email') }}">
                     <input type="password" name="password" class="w-full p-4 rounded-xl bg-opacity-25 outline-none text-white bg-white my-3 placeholder:text-white" placeholder="Password">
                     <button class="w-full rounded-full p-4 bg-red-400 hover:bg-red-500 my-2 h-16 text-md cursor-pointer text-white font-semibold">
@@ -50,15 +50,15 @@
         const toggle = document.getElementById("default-toggle");
         const form = document.getElementById("form");
         const name = document.getElementById("name");
-        const profile = document.getElementById("profile");
+        const image = document.getElementById("image");
         toggle.addEventListener("change", e => {
             if (e.target.checked) {
                 form.action = "{{ asset('register') }}"
                 name.classList.toggle("hidden")
-                profile.classList.toggle("hidden")
+                image.classList.toggle("hidden")
             } else {
                 name.classList.toggle("hidden")
-                profile.classList.toggle("hidden")
+                image.classList.toggle("hidden")
                 form.action = "{{ asset('login') }}"
             }
         })

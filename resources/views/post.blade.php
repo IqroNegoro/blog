@@ -5,12 +5,12 @@
             <div class="flex justify-center items-center flex-col w-1/2">
                 <p>
                 @foreach ($post->tag as $tag)
-                    <a href="{{ asset("?tag=$tag->tag->name") }}" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
+                    <a href="{{ asset("?tag=" . $tag->tag->name . "#tagDiv") }}" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
                 @endforeach
                 </p>
                 <h1 class="text-5xl text-white tracking-wider text-center">{{ $post->title }}</h1>
                 <div class="flex items-center my-3">
-                    <img src="{{ asset("images/" . $post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
+                    <img src="{{ asset($post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
                     <span class="text-white">By</span>
                     <a class="text-white" href="{{ asset("user/" . $post->user->id) }}">&nbsp; {{ $post->user->name }} </a>
                     <span class="text-white">&nbsp; - {{ date("d M Y", strtotime($post->published_at)) }} </span>
@@ -38,7 +38,7 @@
                 @foreach ($post->comment as $comment)
                 <div>
                     <div class="my-10">
-                        <img src="{{ asset("images/" . $comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                        <img src="{{ asset($comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                         <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
                         <span class="mt-2">{{ $comment->created_at->diffForHumans() }}</span>
                         <p class="text-left my-2">{{ $comment->comment }}</p>
@@ -55,7 +55,7 @@
                     </div>
                         @foreach ($comment->replies as $reply)
                         <div class="my-3 translate-x-16">
-                            <img src="{{ asset("images/" . $reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                            <img src="{{ asset($reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                             <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
                             <span class="mt-2">{{ $reply->created_at->diffForHumans() }}</span>
                             <p class="text-left my-2">{{ $reply->comment }}</p>
@@ -77,7 +77,7 @@
             </div>
             {{-- profile --}}
             <div class="flex items-center flex-col mt-96 md:mt-0 w-2/3 mx-auto">
-                <img src="{{ asset("images/" . $post->user->image) }}" alt="" class="w-48 h-48 rounded-full">
+                <img src="{{ asset($post->user->image) }}" alt="" class="w-48 h-48 rounded-full">
                 <a class="mt-6 text-4xl" href="{{ asset("user/" . $post->user->id) }}">{{ $post->user->name }}</a>
                 <p class="text-center">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptas, dicta.</p>
                 <a href="{{ asset("user/" . $post->user->id) }}" class="bg-blue-500 px-5 py-2 text-white rounded-md mt-2">Profile</a>
@@ -134,7 +134,7 @@
                             let text = `
                             <div>
                                 <div class="my-10">
-                                    <img src="{{ asset("images/" . auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
+                                    <img src="{{ asset(auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
                                     <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
                                     <span class="mt-2">0 second</span>
                                     <p class="text-left my-2">${$("#replyInput").val()}</p>
@@ -151,7 +151,7 @@
                         } else {
                             let text = `
                             <div class="my-3 translate-x-16">
-                                <img src="{{ asset("images/" . auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
+                                <img src="{{ asset(auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
                                 <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
                                 <span class="mt-2">0 second</span>
                                 <p class="text-left my-2">${$("#replyInput").val()}</p>

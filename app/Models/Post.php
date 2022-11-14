@@ -12,6 +12,12 @@ class Post extends Model
 
     protected $guarded = ["id"];
 
+    public function scopeTag($query, $tag) {
+        return $query->whereHas("tag.tag", function($posts) use ($tag) {
+            $posts->where("name", "LIKE", "$tag");
+        });
+    }
+
     public function user() {
         return $this->belongsTo(User::class, "user_id");
     }

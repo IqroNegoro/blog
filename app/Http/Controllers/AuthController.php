@@ -33,13 +33,14 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name' => "required|max:255",
-            'profile' => "required|image",
+            'image' => "required|image",
             'email' => 'required',
             'password' => 'required'
         ]);
 
         $data["password"] = bcrypt($data["password"]);
-
+        $data["image"] = $request->file("image")->store("/images", "public");
+        
         if (User::create($data)) {
             return back()->with('success', 'Success Create Account, Please Log In');
         }

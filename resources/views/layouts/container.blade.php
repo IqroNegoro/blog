@@ -21,7 +21,7 @@
         </div>
         @endif
         @if ($errors->any())
-        <div class="fixed bottom-0 right-0 m-2 py-1 px-4 @if (session()->has('success')) bg-green-500 @else bg-red-500 @endif text-white translate-y-16 animate-notif z-10">
+        <div class="fixed bottom-0 right-0 m-2 py-1 px-4 bg-red-500 text-white translate-y-16 animate-notif z-10">
             @foreach ($errors->all() as $error)
                 <p>{{ $error }}</p>
             @endforeach
@@ -31,7 +31,7 @@
             <span class="font-bold">Mini Blog</span>
             <i class="bx bx-menu text-2xl cursor-pointer" id="menuBtn"></i>
         </div>
-        <div class="block fixed top-0 transition-all duration-500 right-0 w-0 min-h-screen bg-white drop-shadow-lg shadow-black" id="menu">
+        <div class="block fixed top-0 transition-all duration-500 right-0 w-0 min-h-screen bg-white drop-shadow-lg shadow-black z-50" id="menu">
             <div class="w-full text-right">
                 <i class="bx bx-x text-2xl font-semibold cursor-pointer" id="closeBtn"></i>
             </div>
@@ -47,7 +47,7 @@
                 </li>
                 @auth
                 <li class="mt-4">
-                    <a href="{{ asset('me') }}">Me</a>
+                    <a href="{{ asset('user/' . auth()->user()->id) }}">Me</a>
                 </li>
                 <li class="mt-4">
                     <form action="{{ asset('logout') }}" method="POST">
@@ -81,6 +81,9 @@
                 </li>
                 <li class="mt-4">
                     <a href="{{ asset('administrator/comments') }}">Comments</a>
+                </li>
+                <li class="mt-4">
+                    <a href="{{ asset('administrator/users') }}">Users</a>
                 </li>
             </ul>
             @endif

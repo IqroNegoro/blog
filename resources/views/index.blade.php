@@ -26,11 +26,11 @@
                 </a>
                 <div class="p-2">
                     @foreach ($post->tag as $tag)
-                        <a href="" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
+                        <a href="{{ asset("?tag=" . $tag->tag->name . "#tagDiv") }}" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
                     @endforeach
                     <h1 class="font-medium text-3xl">{{ $post->title }}</h1>
                     <div class="flex items-center my-3">
-                        <img src="{{ asset('images/' . $post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
+                        <img src="{{ asset($post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
                         <span>By</span>
                         <a href="{{ asset("user/" . $post->user->id) }}">&nbsp; {{ $post->user->name }} </a>
                         <span>&nbsp; - {{ date("d M Y", strtotime($post->published_at)) }}</span>
@@ -42,4 +42,34 @@
             @endforeach
         </div>
     </div>
+    
+    @if (request()->has("tag"))
+    {{-- Tag Posts --}}
+    <div class="w-full p-4 mt-4" id="tagDiv">
+        <h3 class="font-medium text-3xl mb-12">Tag Posts</h3>
+        <div class="w-full grid md:grid-cols-3 grid-rows-[repeat(auto-fit,1fr)] gap-4">
+            @foreach ($tagPosts as $post)
+            <div>
+                <a href="{{ asset("post/$post->slug") }}">
+                    <img src="{{ asset("$post->image") }}" alt="" class="rounded-md w-full h-64" loading="lazy">
+                </a>
+                <div class="p-2">
+                    @foreach ($post->tag as $tag)
+                        <a href="{{ asset("?tag=" . $tag->tag->name . "#tagDiv") }}" class="tag" style="background-color: {{ $tag->tag->color }}">{{ $tag->tag->name }}</a>
+                    @endforeach
+                    <h1 class="font-medium text-3xl">{{ $post->title }}</h1>
+                    <div class="flex items-center my-3">
+                        <img src="{{ asset($post->user->image) }}" alt="" loading="lazy" class="w-10 h-10 rounded-full mr-4">
+                        <span>By</span>
+                        <a href="{{ asset("user/" . $post->user->id) }}">&nbsp; {{ $post->user->name }} </a>
+                        <span>&nbsp; - {{ date("d M Y", strtotime($post->published_at)) }}</span>
+                    </div>
+                    <p>{{ $post->excerpt }}</p>
+                    <a href="{{ asset("post/$post->slug") }}" class="text-blue-400">Read More</a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 @endsection

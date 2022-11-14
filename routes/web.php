@@ -45,4 +45,5 @@ Route::prefix("/")->middleware("auth", "admin")->group(function() {
     Route::resource("administrator/posts", AdminPostController::class);
     Route::get("administrator/replies/{comment:id}", [AdminCommentController::class, "show"]);
     Route::resource("administrator/comments", AdminCommentController::class);
+    Route::resource("administrator/users", UserController::class);
 });
