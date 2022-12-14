@@ -19,12 +19,15 @@ class Comment extends Model
         return $this->belongsTo(Post::class, "post_id");
     }
 
-    public function replies() {
-        return $this->hasMany(Comment::class, "parent_id")->whereNotNull("parent_id");
-    }
-
+    
     public function replied() {
         return $this->belongsTo(Comment::class, "parent_id", "id");
+    }
+
+    public function replies() {
+        return $this->hasMany(Comment::class, "parent_id")->whereNotNull("parent_id")->whereHas("replied", function($replied) {
+            $replied->where("published", "Y");
+        });
     }
 
     public static function boot() {

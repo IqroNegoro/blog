@@ -9,6 +9,7 @@
                 <th>Post</th>
                 <th>User</th>
                 <th>Comment</th>
+                <th>Published</th>
                 <th>Created At</th>
                 <th>Action</th>
             </tr>
@@ -22,6 +23,15 @@
                     <a href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
                 </td>
                 <td class="border border-slate-700">{{ $comment->comment }}</td>
+                <td class="border border-slate-700">
+                    <form action="{{ asset("administrator/comments/$comment->id") }}" method="POST">
+                        @method('put')
+                        @csrf
+                        <button type="submit" name="published" value="{{ $comment->published == 'N' ? 'Y' : 'N' }}" class="@if ($comment->published == 'N') bg-red-500 @else bg-green-500 @endif py-1 px-2 text-white rounded-sm">
+                            {{ $comment->published }}
+                        </button>
+                    </form>
+                </td>
                 <td class="border border-slate-700">{{ $comment->created_at->diffForHumans() }}</td>
                 <td class="border border-slate-700">
                     <div class="flex justify-center items-center gap-2">

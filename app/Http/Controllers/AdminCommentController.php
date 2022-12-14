@@ -75,7 +75,12 @@ class AdminCommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        if ($request->has('published')) {
+            if ($comment->update(['published' => $request->published == 'N' ? 'N' : 'Y', 'published_at' => date('Y-m-d', strtotime(now()))])) {
+                return back()->with('success', $request->published == 'N' ? 'Success Unpublishing Comment' : 'Success Publishing Comment');
+            }
+            return back()->with('error', 'Error, Try Again');
+        }
     }
 
     /**

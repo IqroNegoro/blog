@@ -35,7 +35,70 @@
                 <button class="bg-blue-500 py-1 px-3 text-white rounded-sm mt-4" id="replyBtn">Comment</button>
                 @endauth
                 <div id="replyContainer">
-                @foreach ($post->comment as $comment)
+                @foreach ($post->comment->sortBy("updated_at") as $comment)
+                @if ($comment->published == "N" && auth()->check() && $comment->user_id == auth()->user()->id)
+                <div class="relative">
+                    <div class="@if ($comment->published == 'N') absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-white font-semibold @endif">
+                        Your Comment Not Published Yet
+                    </div>
+                    <div class="my-10">
+                        <img src="{{ asset($comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                        <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
+                        <span class="mt-2">{{ $comment->created_at->diffForHumans() }}</span>
+                        <p class="text-left my-2">{{ $comment->comment }}</p>
+                        @auth
+                        <button class="text-md transition-all duration-500 text-slate-500 reply" value="{{ $comment->id }}">
+                            Reply
+                        </button>
+                            @if (auth()->user()->id == $comment->user_id)
+                            <button class="text-md transition-all duration-500 text-slate-500 ml-5 delete" value="{{ $comment->id }}">
+                                Delete
+                            </button>
+                            @endif
+                        @endauth
+                    </div>
+                        @foreach ($comment->replies->sortBy("updated_at") as $reply)
+                        @if ($reply->published == "N" && auth()->check() && $reply->user_id == auth()->user()->id)
+                        <div class="my-3 translate-x-16 relative">
+                            <div class="@if ($reply->published == 'N') absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-white font-semibold @endif">
+                                Your Comment Not Published Yet
+                            </div>
+                            <img src="{{ asset($reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                            <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
+                            <span class="mt-2">{{ $reply->created_at->diffForHumans() }}</span>
+                            <p class="text-left my-2">{{ $reply->comment }}</p>
+                            @auth
+                            <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
+                                Reply
+                            </button>
+                                @if (auth()->user()->id == $reply->user_id)
+                                <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
+                                    Delete
+                                </button>
+                                @endif
+                            @endauth
+                        </div>
+                        @elseif ($reply->published == "Y")
+                        <div class="my-3 translate-x-16">
+                            <img src="{{ asset($reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                            <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
+                            <span class="mt-2">{{ $reply->created_at->diffForHumans() }}</span>
+                            <p class="text-left my-2">{{ $reply->comment }}</p>
+                            @auth
+                            <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
+                                Reply
+                            </button>
+                                @if (auth()->user()->id == $reply->user_id)
+                                <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
+                                    Delete
+                                </button>
+                                @endif
+                            @endauth
+                        </div>
+                        @endif
+                        @endforeach
+                </div>
+                @elseif ($comment->published == "Y")
                 <div>
                     <div class="my-10">
                         <img src="{{ asset($comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
@@ -53,7 +116,28 @@
                             @endif
                         @endauth
                     </div>
-                        @foreach ($comment->replies as $reply)
+                        @foreach ($comment->replies->sortBy("updated_at") as $reply)
+                        @if ($reply->published == "N" && auth()->check() && $reply->user_id == auth()->user()->id)
+                        <div class="my-3 translate-x-16 relative">
+                            <div class="@if ($reply->published == 'N') absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-white font-semibold @endif">
+                                Your Comment Not Published Yet
+                            </div>
+                            <img src="{{ asset($reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                            <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
+                            <span class="mt-2">{{ $reply->created_at->diffForHumans() }}</span>
+                            <p class="text-left my-2">{{ $reply->comment }}</p>
+                            @auth
+                            <button class="text-md transition-all duration-500 text-slate-500 replied" value="{{ $comment->id }}">
+                                Reply
+                            </button>
+                                @if (auth()->user()->id == $reply->user_id)
+                                <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="{{ $comment->id }}">
+                                    Delete
+                                </button>
+                                @endif
+                            @endauth
+                        </div>
+                        @elseif ($reply->published == "Y")
                         <div class="my-3 translate-x-16">
                             <img src="{{ asset($reply->user->image) }}" alt="" class="w-12 h-12 rounded-full">
                             <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $reply->user->id) }}">{{ $reply->user->name }}</a>
@@ -70,8 +154,10 @@
                                 @endif
                             @endauth
                         </div>
+                        @endif
                         @endforeach
                 </div>
+                @endif
                 @endforeach
                 </div>
             </div>
@@ -132,12 +218,15 @@
                     if (res) {
                         if (!reply) {
                             let text = `
-                            <div>
+                            <div class="relative">
+                                <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-white font-semibold">
+                                    Your Comment Not Published Yet
+                                </div>
                                 <div class="my-10">
-                                    <img src="{{ asset(auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
-                                    <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
-                                    <span class="mt-2">0 second</span>
-                                    <p class="text-left my-2">${$("#replyInput").val()}</p>
+                                    <img src="{{ asset($comment->user->image) }}" alt="" class="w-12 h-12 rounded-full">
+                                    <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . $comment->user->id) }}">{{ $comment->user->name }}</a>
+                                    <span class="mt-2">{{ $comment->created_at->diffForHumans() }}</span>
+                                    <p class="text-left my-2">${$('#replyInput').val()}</p>
                                     <button class="text-md transition-all duration-500 text-slate-500 reply" value="${res}">
                                         Reply
                                     </button>
@@ -145,21 +234,23 @@
                                         Delete
                                     </button>
                                 </div>
-                            </div>
                             `;
                             $("#replyContainer").append(text);
                         } else {
                             let text = `
-                            <div class="my-3 translate-x-16">
+                            <div class="my-3 translate-x-16 relative">
+                                <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center text-white font-semibold">
+                                    Your Comment Not Published Yet
+                                </div>
                                 <img src="{{ asset(auth()->user()->image) }}" alt="" class="w-12 h-12 rounded-full">
                                 <a class="inline-block text-blue-500 cursor-pointer mt-2" href="{{ asset("user/" . auth()->user()->id) }}">{{ auth()->user()->name }}</a>
-                                <span class="mt-2">0 second</span>
+                                <span class="mt-2">0 seconds</span>
                                 <p class="text-left my-2">${$("#replyInput").val()}</p>
                                 <button class="text-md transition-all duration-500 text-slate-500 replied" value="${res}">
                                     Reply
                                 </button>
                                 <button class="text-md transition-all duration-500 text-slate-500 ml-5 deleteReplied" value="${res}">
-                                    Delete
+                                Delete
                                 </button>
                             </div>
                             `;

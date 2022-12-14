@@ -20,7 +20,7 @@ class PostController extends Controller
     {
         return view('posts.index', [
             'title' => 'Me',
-            'posts' => Post::with(["user", "tag"])->where('user_id', auth()->user()->id)->get()
+            'posts' => Post::with(["user", "tag", "comment"])->where('user_id', auth()->user()->id)->get()
         ]);
     }
 

@@ -14,8 +14,9 @@
         </thead>
         <tbody>
             @foreach ($users as $user)
-            <tr class="text-center border border-slate-600">
-                <td class="border border-slate-700">{{ $loop->iteration }}</td>
+                @if ($user->admin != "Y")
+                <tr class="text-center border border-slate-600">
+                    <td class="border border-slate-700">{{ $loop->iteration }}</td>
                 <td class="border border-slate-700">{{ $user->name }}</td>
                 <td class="border border-slate-700">{{ $user->email }}</td>
                 <td class="border border-slate-700">{{ $user->created_at->diffForHumans() }}</td>
@@ -37,6 +38,7 @@
                     </div>
                 </td>
             </tr>
+            @endif
             @endforeach
         </tbody>
     </table>

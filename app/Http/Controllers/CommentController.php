@@ -39,12 +39,21 @@ class CommentController extends Controller
     public function store(Request $request, Post $post)
     {
         if ($request->has("comment")) {
+            
+            $request->validate([
+                "comment" => "required|max:255",
+            ]);
+
             $data = [
                 "user_id" => auth()->user()->id,
                 "post_id" => $post->id,
                 "comment" => $request->comment,
                 "parent_id" => $request->reply ?? null
             ];
+
+            if ($request->reply && Comment::find($request->reply)->published == "N") {
+                return response()->json(false, 200);
+            }
     
             if (Comment::create($data)) {
                 return response()->json(Comment::latest()->first()->id, 200);
